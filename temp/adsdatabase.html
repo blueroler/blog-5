@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ads Section</title>
+    <style>
+        .ads-banner {
+            position: relative;
+            width: 1020px;
+            height: 300px;
+            overflow: hidden;
+            background-color: #ddd;
+        }
+
+        .banner-item {
+            position: absolute;
+            top: 0;
+            left: 100%;
+            /* Vị trí ban đầu của item nằm ngoài khung nhìn */
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            /* Ẩn item ban đầu */
+            transform: scale(1);
+            transition: opacity 1s, transform 1s, left 1s;
+            /* Hiệu ứng chuyển đổi */
+        }
+
+        .banner-item.active {
+            left: 0;
+            /* Đưa item vào giữa khung nhìn */
+            opacity: 1;
+            /* Hiển thị item */
+            transform: scale(1);
+            /* Kích thước bình thường */
+        }
+
+        .banner-item.exiting {
+            opacity: 0;
+            /* Mờ dần item cũ */
+            transform: scale(0.5);
+            /* Thu nhỏ item cũ */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="ads-banner" id="ads-banner">
+        <!-- Các item quảng cáo sẽ được thêm động -->
+    </div>
+
+    <script>
+        // Firebase configuration
+        const databaseUrl = 'https://blueroler-static-default-rtdb.firebaseio.com/';
+        const banner = document.getElementById('ads-banner');
+        let items = [];
+        let currentIndex = 0;
+
+        // Lấy dữ liệu từ Firebase và xử lý
+        async function fetchAds() {
+            try {
+                const response = await fetch(`${databaseUrl}/ads.json`);
+                const data = await response.json();
+
+                if (data) {
+                    // Chỉ lấy giá trị 'img' và 'url' từ dữ liệu Firebase
+                    items = Object.values(data).map(item => ({
+                        img: item.img, // giá trị img dùng cho background-image
+                        url: item.ads  // giá trị url là link quảng cáo
+                    }));
+                    renderBanner(items);
+                } else {
+                    console.warn("Không có dữ liệu quảng cáo trong database.");
+                    banner.innerHTML = '<p>Không có quảng cáo để hiển thị.</p>';
+                }
+            } catch (error) {
+                console.error("Lỗi khi lấy dữ liệu từ Firebase:", error);
+            }
+        }
+
+        function renderBanner(items) {
+            // Xóa các item cũ
+            banner.innerHTML = '';
+
+            // Thêm các item mới vào DOM dưới dạng thẻ <a>
+            items.forEach((item, index) => {
+                const anchor = document.createElement('a');
+                anchor.className = 'banner-item';
+                anchor.href = item.url;  // Link đến quảng cáo
+                anchor.style.backgroundImage = `url('${item.img}')`;  // Background là hình ảnh quảng cáo
+
+                // Đặt item đầu tiên làm active
+                if (index === 0) {
+                    anchor.classList.add('active');
+                    anchor.style.zIndex = 2;  // Đặt z-index cao cho item đầu tiên
+                } else {
+                    anchor.style.zIndex = 1;  // Đặt z-index thấp cho các item khác
+                }
+
+                banner.appendChild(anchor);
+            });
+
+            // Khởi động hiệu ứng chuyển đổi nếu có nhiều hơn 1 item
+            if (items.length > 1) {
+                initializeBanner();
+            }
+        }
+
+        function showNextItem() {
+            const allItems = document.querySelectorAll('.banner-item');
+            const currentItem = allItems[currentIndex];
+            const nextIndex = (currentIndex + 1) % allItems.length;
+            const nextItem = allItems[nextIndex];
+
+            // Gán hiệu ứng cho item hiện tại
+            currentItem.classList.remove('active');
+            currentItem.classList.add('exiting');
+            currentItem.style.zIndex = 1; // Đặt z-index của item cũ thấp
+
+            // Đưa item tiếp theo vào khung nhìn và gán z-index cao
+            nextItem.style.left = '100%'; // Vị trí bắt đầu ngoài khung nhìn
+            nextItem.style.zIndex = 2; // Đặt z-index của item mới cao hơn item hiện tại
+
+            setTimeout(() => {
+                nextItem.classList.add('active');
+                nextItem.style.left = '0'; // Trôi vào giữa khung nhìn
+            }, 10);
+
+            // Sau khi hoàn thành hiệu ứng, cập nhật trạng thái và reset z-index
+            setTimeout(() => {
+                currentItem.classList.remove('exiting'); // Xóa trạng thái thoát của item cũ
+                currentItem.style.left = '100%'; // Reset vị trí của item cũ
+                currentItem.style.zIndex = ''; // Reset z-index
+                currentIndex = nextIndex; // Cập nhật chỉ mục hiện tại
+            }, 1000); // Thời gian khớp với transition
+        }
+
+        function initializeBanner() {
+            const allItems = document.querySelectorAll('.banner-item');
+            if (allItems.length === 0) return;
+
+            currentIndex = 0;
+            allItems.forEach(item => {
+                item.classList.remove('active', 'exiting');
+                item.style.left = '100%'; // Đặt các item ra ngoài khung nhìn
+                item.style.zIndex = 1; // Đặt z-index thấp cho các item ban đầu
+            });
+
+            allItems[currentIndex].classList.add('active');
+            allItems[currentIndex].style.left = '0';
+            allItems[currentIndex].style.zIndex = 2; // Đặt z-index của item đầu tiên cao
+
+            setInterval(showNextItem, 3000); // Tạo vòng lặp hiển thị item mỗi 3 giây
+        }
+
+        // Khởi động quá trình lấy dữ liệu và hiển thị banner
+        fetchAds();
+    </script>
+
+
+</body>
+
+</html>

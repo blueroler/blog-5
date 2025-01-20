@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blueroler</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            font-family: sans-serif;
+            margin: auto;
+            font-size: 25px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h4,
+        p {
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table td:focus {
+            background-color: #eae9e9;
+            border-radius: 0px;
+        }
+
+        table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            font-size: 25px;
+            box-sizing: border-box;
+        }
+
+        /* Form quản lý bài viết */
+        form {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-width: 800px;
+            margin: auto;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        form div {
+            margin-bottom: 15px;
+        }
+
+        .just-center {
+            display: flex;
+        }
+
+        form label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        form input[type="text"],
+        form textarea {
+            width: calc(100% - 25px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        form input:focus[type="text"] {
+            border: 1px solid rgb(0, 162, 255);
+            outline: none;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            flex: 1;
+        }
+
+        form button:hover {
+            background: #125079;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>site editer</h1>
+        <table>
+            <tbody>
+            </tbody>
+        </table>
+        <form id='posts'>
+            <div>
+                <label for="ads-id">Thêm quảng cáo</label>
+                <input type="text" id="img-id" placeholder="Img banner" required />
+            </div>
+            <div>
+                <input type="text" id="ads-id" placeholder="ADS link" required>
+            </div>
+            <div class="just-center">
+                <button type="submit">Tạo</button>
+                <!-- <button id="addnews" type="button">Tạo bài viết</button> -->
+            </div>
+        </form>
+
+    </div>
+
+    <script>
+        const databaseUrl = 'https://blueroler-static-default-rtdb.firebaseio.com';
+        const dataContainer = document.querySelector('tbody');
+
+        async function tech() {
+            const response = await fetch(`${databaseUrl}/ads.json`);
+            const news = await response.json();
+            const newsArray = Object.entries(news || {}).map(([id, item]) => ({ id, ...item }));
+            newsArray.sort((a, b) => a.order - b.order); // Sắp xếp theo `order`
+
+            let htmlData = `
+        <tr>
+            <td><h4>Thứ tự</h4></td>
+            <td><h4>Img</h4></td>
+            <td><h4>ADS</h4></td>
+            <td style="width: 200px;"><h4>Hành động</h4></td>
+        </tr>
+    `;
+
+            newsArray.forEach((item, index) => {
+                htmlData += `
+            <tr>
+                <td><p>${item.order}</p></td>
+                <td><p>${item.img}</p></td>
+                <td>${item.ads}</td>
+                <td style="width: 300px; display: flex; gap: 10px;">
+                    <button onclick="readyForUpdate('${item.id}', this)">Update</button>
+                    <button onclick="removeMess('${item.id}')">Delete</button>
+                    <button onclick="moveUp('${item.id}', ${index})">Move Up</button>
+                    <button onclick="moveDown('${item.id}', ${index})">Move Down</button>
+                </td>
+            </tr>
+        `;
+            });
+
+            dataContainer.innerHTML = htmlData;
+        }
+
+        async function moveUp(id, index) {
+            const response = await fetch(`${databaseUrl}/ads.json`);
+            const news = await response.json();
+            const newsArray = Object.entries(news || {}).map(([id, item]) => ({ id, ...item }));
+            newsArray.sort((a, b) => a.order - b.order);
+
+            if (index > 0) {
+                const currentItem = newsArray[index];
+                const prevItem = newsArray[index - 1];
+
+                // Hoán đổi `order`
+                const updates = {
+                    [`/ads/${currentItem.id}/order`]: prevItem.order,
+                    [`/ads/${prevItem.id}/order`]: currentItem.order,
+                };
+
+                await fetch(`${databaseUrl}/.json`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updates),
+                });
+
+                tech(); // Load lại dữ liệu
+            }
+        }
+
+        async function moveDown(id, index) {
+            const response = await fetch(`${databaseUrl}/ads.json`);
+            const news = await response.json();
+            const newsArray = Object.entries(news || {}).map(([id, item]) => ({ id, ...item }));
+            newsArray.sort((a, b) => a.order - b.order);
+
+            if (index < newsArray.length - 1) {
+                const currentItem = newsArray[index];
+                const nextItem = newsArray[index + 1];
+
+                // Hoán đổi `order`
+                const updates = {
+                    [`/ads/${currentItem.id}/order`]: nextItem.order,
+                    [`/ads/${nextItem.id}/order`]: currentItem.order,
+                };
+
+                await fetch(`${databaseUrl}/.json`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updates),
+                });
+
+                tech(); // Load lại dữ liệu
+            }
+        }
+
+        tech(); // Gọi hàm để tải dữ liệu ban đầu
+
+
+        async function saveAds(event) {
+            event.preventDefault();
+
+            const data1 = document.getElementById('img-id').value.trim();
+            const data2 = document.getElementById('ads-id').value.trim();
+
+            if (!data1 || !data2) {
+                alert('Hãy điền đầy đủ thông tin!');
+                return;
+            }
+
+            try {
+                // Lấy danh sách hiện tại từ Firebase
+                const response = await fetch(`${databaseUrl}/ads.json`);
+                const adsData = await response.json();
+                const adsArray = Object.entries(adsData || {}).map(([id, item]) => ({ id, ...item }));
+
+                // Tìm giá trị order lớn nhất
+                const maxOrder = adsArray.length > 0
+                    ? Math.max(...adsArray.map(item => item.order || 0)) // Nếu không có order, mặc định là 0
+                    : 0;
+
+                // Tạo mục mới với order = maxOrder + 1
+                const newAd = {
+                    img: data1,
+                    ads: data2,
+                    order: maxOrder + 1
+                };
+
+                // Gửi dữ liệu mới lên Firebase
+                const saveResponse = await fetch(`${databaseUrl}/ads.json`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newAd),
+                });
+
+                if (saveResponse.ok) {
+                    alert('Thêm thành công!');
+                    document.getElementById('posts').reset(); // Reset form
+                    tech(); // Reload dữ liệu
+                } else {
+                    alert('Thêm thất bại.');
+                }
+            } catch (error) {
+                console.error('Lỗi khi thêm dữ liệu:', error);
+                alert('Đã xảy ra lỗi khi thêm.');
+            }
+        }
+
+
+        async function removeMess(key) {
+            try {
+                const response = await fetch(`${databaseUrl}/ads/${key}.json`, { method: 'DELETE' });
+                if (response.ok) {
+                    alert('Xóa thành công!');
+                    tech();
+                } else {
+                    alert('Xóa thất bại.');
+                }
+            } catch (error) {
+                console.error('Lỗi khi xóa dữ liệu:', error);
+                alert('Đã xảy ra lỗi khi xóa.');
+            }
+        }
+
+        function readyForUpdate(key, elem) {
+            const siblingTd = elem.parentElement.parentElement.getElementsByTagName('td');
+            for (var i = 1; i < siblingTd.length - 1; i++) {
+                siblingTd[i].contentEditable = true;
+                siblingTd[i].classList.add('temp-update-class');
+            }
+            elem.setAttribute('onclick', `updateNow('${key}', this)`);
+            elem.innerHTML = 'Send';
+        }
+
+        async function updateNow(key, elem) {
+            const contentId = document.querySelectorAll('.temp-update-class');
+            const obj = {
+                img: contentId[0].textContent.trim(),
+                ads: contentId[1].textContent.trim(),
+            };
+
+            try {
+                const response = await fetch(`${databaseUrl}/ads/${key}.json`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(obj),
+                });
+
+                if (response.ok) {
+                    contentId.forEach(cell => {
+                        cell.contentEditable = false;
+                        cell.classList.remove('temp-update-class');
+                    });
+                    elem.setAttribute('onclick', `readyForUpdate('${key}', this)`);
+                    elem.innerHTML = 'Edit';
+                    alert('Cập nhật thành công!');
+                } else {
+                    alert('Cập nhật thất bại.');
+                }
+            } catch (error) {
+                console.error('Lỗi khi cập nhật dữ liệu:', error);
+                alert('Đã xảy ra lỗi khi cập nhật.');
+            }
+        }
+
+        document.getElementById('posts').addEventListener('submit', saveAds);
+        tech();
+    </script>
+
+</body>
+
+</html>

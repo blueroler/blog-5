@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tạo mới bài viết</title>
+  <link rel="stylesheet" href="/css/add.css">
+</head>
+
+<body>
+
+  <form id='posts'>
+    <input style="display: none;" id="post-id" />
+    <div>
+      <label for="category">Chủ đề bài viết:</label>
+      <input id="get-category" list="category" type="text" required>
+      <datalist id="category">
+        <option value="politics"></option>
+        <option value="shows"></option>
+        <option value="sport"></option>
+        <option value="tech"></option>
+        <option value="hots"></option>
+      </datalist>
+    </div>
+
+    <div>
+      <label for="name">Tên bài viết:</label>
+      <input type="text" id="name" required />
+    </div>
+
+    <div>
+      <label for="summary">Ảnh thumbnail:</label>
+      <textarea rows="4" cols="50" id="summary" placeholder="Link ảnh nhúng" required></textarea>
+    </div>
+
+    <div class="just-center">
+      <button type="submit">Tạo bài viết</button>
+      <!-- <button id="addnews" type="button">Tạo bài viết</button> -->
+    </div>
+
+  </form>
+
+  <script src="/api/link.js"></script>
+  <script>
+    // Gắn sự kiện cho form
+    document.getElementById('posts').addEventListener('submit', savePost);
+
+    // Lắng nghe sự kiện click
+    // document.getElementById('addnews').addEventListener('click', (event) => { addnews(event); });
+
+
+
+    // chức năng tạo bài viết
+    async function savePost(event) {
+      event.preventDefault();
+
+      const topic = document.getElementById('get-category').value;
+      const postId = document.getElementById('post-id').value;
+      const name = document.getElementById('name').value;
+      const summary = document.getElementById('summary').value;
+
+      const postData = {
+        status: 'draft',
+        topic,
+        name,
+        summary,
+        timestamp: postId ? Date.now() : Date.now(),
+      };
+
+      const method = postId ? 'PUT' : 'POST';
+      const url = postId
+        ? `${databaseUrl}/news/${postId}.json`
+        : `${databaseUrl}/news.json`;
+
+      await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(postData),
+      });
+
+      document.getElementById('posts').reset();
+      window.location.href = `admin.html`;
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,578 @@
+/* style body and cell element ////////////////////////////////////////////////*/
+body {
+  min-height: 1500px;
+  font-family: Arial, sans-serif;
+  background-color: #fff;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  /* background-color: #000; */
+}
+
+/* body::-webkit-scrollbar {
+  display: none;
+} */
+
+body::-webkit-scrollbar:horizontal {
+  display: none;
+}
+
+/* body::-webkit-scrollbar:vertical {
+  display: none;
+} */
+
+/* Style scrollbar mặc định */
+body::-webkit-scrollbar {
+  width: 8px;
+  /* Độ rộng của scrollbar */
+  height: 8px;
+  /* Chiều cao của scrollbar ngang */
+}
+
+body::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  /* Màu nền của track */
+  border-radius: 4px;
+  /* Bo tròn track */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #999;
+  /* Màu của thanh kéo */
+  border-radius: 4px;
+  /* Bo tròn thanh kéo */
+  transition: background-color 0.2s ease-in-out;
+  /* Hiệu ứng mượt */
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background-color: #777;
+  /* Màu khi hover thanh kéo */
+}
+
+body::-webkit-scrollbar-corner {
+  background-color: transparent;
+  /* Góc của scrollbar ngang và dọc giao nhau */
+}
+
+/* Scrollbar cho phần tử cụ thể */
+#get-data-list::-webkit-scrollbar {
+  width: 5px;
+  background-color: #f0f0f0;
+}
+
+#get-data-list::-webkit-scrollbar-thumb {
+  background-color: #999;
+  /* Màu sắc tùy chỉnh cho list-main-section */
+  border-radius: 3px;
+}
+
+#get-data-list::-webkit-scrollbar-thumb:hover {
+  background-color: #777;
+}
+
+img {
+  border-radius: 8px;
+}
+
+h2 {
+  margin: 10px 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* style header ////////////////////////////////////////////////*/
+
+.header {
+  height: 50px;
+  width: 100%;
+  top: 0;
+  background-color: #003366;
+  color: #fff;
+  text-align: center;
+  position: sticky;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+}
+
+.header nav {
+  width: 1000px;
+  height: 50px;
+  display: flex;
+  overflow: hidden;
+  gap: 10px;
+  justify-content: center;
+}
+
+.icon-menu {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.line {
+  width: 25px;
+  height: 2px;
+  background-color: #fff;
+  margin: 5px auto;
+}
+
+.header a,
+.header button {
+  max-width: 100px;
+  display: inline-block;
+  color: #fff;
+  text-decoration: none;
+  line-height: 50px;
+  flex: 1;
+  font-size: 16px;
+  line-height: 50px;
+  background-color: #003366;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+}
+
+/* style ads banner */
+
+.ads-banner {
+  text-align: center;
+  margin: 20px auto;
+  width: 1020px;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+}
+
+.banner-item {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  /* Vị trí ban đầu của item nằm ngoài khung nhìn */
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  /* Ẩn item ban đầu */
+  transform: scale(1);
+  transition: opacity 1s, transform 1s, left 1s;
+  /* Hiệu ứng chuyển đổi */
+}
+
+.banner-item.active {
+  left: 0;
+  /* Đưa item vào giữa khung nhìn */
+  opacity: 1;
+  /* Hiển thị item */
+  transform: scale(1);
+  /* Kích thước bình thường */
+}
+
+.banner-item.exiting {
+  opacity: 0;
+  /* Mờ dần item cũ */
+  transform: scale(0.5);
+  /* Thu nhỏ item cũ */
+}
+
+/* style main content ////////////////////////////////////////////////*/
+
+main {
+  display: flex;
+  margin: 0 0 30px 0;
+  justify-content: center;
+}
+
+sub {
+  display: flex;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+.sub-section {
+  border-top: #ddd 1px solid;
+  /* border-left: #ddd 1px solid;
+  border-right: #ddd 1px solid; */
+}
+
+.main-content {
+  width: 1020px;
+  display: flex;
+  gap: 20px;
+}
+
+/* style hots-main-section ////////////////////////////////////////////////*/
+
+.hots-main-section {
+  margin: 0;
+  min-width: 400px;
+  min-height: 1920px;
+  flex: 3;
+}
+
+.hots-news-item {
+  height: auto;
+  margin-bottom: 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.hots-news-text {
+  color: #003366;
+  margin: 0;
+}
+
+.hots-news-text h4 {
+  margin: 5px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.hots-news-text h4:hover {
+  text-decoration: underline;
+}
+
+.hots-news-img {
+  position: relative;
+  background-color: #ddd;
+  /* Màu nền cho skeleton */
+  width: 100%;
+  /* Chiều rộng theo bố cục */
+  aspect-ratio: 16 / 9;
+  /* Tỷ lệ khung hình (16:9, 4:3, hoặc tùy ý) */
+  background-color: #f0f0f0;
+  /* Màu nền để hiển thị khi ảnh chưa tải */
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.hots-news-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Hoặc contain để giữ toàn bộ ảnh trong khung */
+}
+
+.see-more {
+  text-align: center;
+}
+
+.see-more a {
+  cursor: pointer;
+  color: #003366;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* style list-main-section ////////////////////////////////////////////////*/
+
+.list-main-section {
+  width: 380px;
+  /* max-height: 1320px; */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.list-main-section h2 {
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  margin: 0;
+  height: 50px;
+  line-height: 50px;
+}
+
+.list-main-section #get-data-list {
+  padding-right: 20px;
+  margin-top: 50px;
+  overflow: auto;
+}
+
+.list-news-item {
+  padding: 0 10px 10px 10px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 10px;
+  border-radius: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.list-news-img {
+  position: relative;
+  width: 120px;
+  height: 100px;
+  min-width: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  background-color: #ddd;
+}
+
+.list-news-img img {
+  display: none;
+  /* Ẩn ảnh mặc định */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.list-news-text {
+  overflow: hidden;
+}
+
+.list-news-text h4 {
+  max-height: 73px;
+  overflow: hidden;
+  font-size: 1rem;
+  color: #003366;
+  margin: 0;
+}
+
+.list-news-text small {
+  display: block;
+  color: #777;
+  font-size: 0.8rem;
+  margin: 5px 0;
+}
+
+.list-news-item:hover {
+  cursor: pointer;
+  transform: translateX(20px);
+  /* box-shadow: 0 15px 15px rgba(0, 0, 0, 0.5); */
+}
+
+.list-news-text h4:hover {
+  text-decoration: underline;
+}
+
+/* style foot-content ////////////////////////////////////////////////*/
+
+.foot-content {
+  width: 1020px;
+}
+
+/* ///////////////////////////////////////// */
+.section-title {
+  height: 80px;
+  display: flex;
+  /* Sử dụng flexbox để căn chỉnh nội dung */
+  justify-content: space-between;
+  /* Đẩy tiêu đề sang trái và các nút sang phải */
+  align-items: center;
+  /* Căn giữa theo trục dọc */
+  /* Căn giữa và thêm khoảng cách trên dưới */
+  width: 100%;
+  /* Độ rộng của phần tiêu đề */
+  padding: 10px 10px 0 10px;
+  box-sizing: border-box;
+}
+
+.section-title h2 {
+  font-size: 24px;
+  /* Kích thước chữ của tiêu đề */
+  margin: 0;
+  /* Xóa khoảng cách mặc định của h2 */
+}
+
+.carousel-buttons {
+  display: flex;
+  /* Sử dụng flexbox để căn chỉnh các nút */
+  gap: 10px;
+  /* Khoảng cách giữa các nút */
+}
+
+.carousel-button {
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Nền mờ màu đen */
+  color: #fff;
+  /* Màu chữ trắng */
+  border: none;
+  /* Loại bỏ viền nút */
+  padding: 10px 15px;
+  /* Khoảng cách bên trong nút */
+  cursor: pointer;
+  /* Thay đổi con trỏ thành dạng click */
+  border-radius: 8px;
+  /* Bo góc nút */
+  font-size: 16px;
+  /* Kích thước chữ của nút */
+}
+
+.carousel-container {
+  width: 100%;
+  /* Độ rộng băng chuyền */
+  margin: auto;
+  /* Căn giữa băng chuyền */
+  overflow: hidden;
+  /* Ẩn nội dung tràn ra ngoài khung */
+  position: relative;
+  /* Đặt vị trí tương đối để căn chỉnh phần tử bên trong */
+  min-height: 200px;
+}
+
+.carousel {
+  display: flex;
+  /* Sử dụng flexbox để xếp các mục trong hàng ngang */
+  transition: transform 0.5s ease-in-out;
+  /* Hiệu ứng chuyển động khi dịch chuyển băng chuyền */
+  margin: 0 0 10px 0;
+}
+
+.carousel-item {
+  flex: 0 0 25%;
+  /* Mỗi mục chiếm 25% độ rộng, đủ để hiển thị 4 mục trong khung */
+  box-sizing: border-box;
+  /* Tính toán kích thước bao gồm cả padding và border */
+  padding: 10px;
+  /* Khoảng cách bên trong mỗi mục */
+  border-radius: 8px;
+}
+
+.cursor-item {
+  display: flex;
+  /* Sử dụng flexbox để căn chỉnh nội dung */
+  flex-direction: column;
+  /* Xếp các phần tử theo cột */
+  /* background-color: #f9f9f9; */
+  /* Màu nền nhạt */
+  /* border: 1px solid #ddd; */
+  /* Đường viền nhạt */
+  border-radius: 8px;
+  /* Bo góc khung */
+  overflow: hidden;
+  /* Ẩn nội dung tràn ra ngoài khung */
+  cursor: pointer;
+}
+
+.section-img img {
+  width: 100%;
+  /* Hình ảnh chiếm toàn bộ chiều rộng */
+  height: 150px;
+  /* Chiều cao cố định */
+  object-fit: cover;
+  /* Cắt hình ảnh để vừa khung mà không méo */
+}
+
+.section-text {
+  padding: 10px;
+  /* Khoảng cách bên trong phần text */
+}
+
+.section-text h4 {
+  font-size: 16px;
+  /* Kích thước chữ của tiêu đề bài viết */
+  margin: 0 0 5px 0;
+  /* Khoảng cách dưới chữ */
+  color: #003366;
+  font-weight: 600;
+  max-height: 80px;
+  overflow: hidden;
+}
+
+.section-text h4:hover {
+  text-decoration: underline;
+}
+
+.section-text small {
+  font-size: 12px;
+  /* Kích thước chữ của ngày đăng */
+  color: #888;
+  /* Màu chữ nhạt */
+}
+
+.section-img {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  /* background-color: #ddd; */
+  /* Màu nền cho skeleton */
+}
+
+.section-img img {
+  display: none;
+  /* Ẩn ảnh mặc định */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.skeleton-active img {
+  display: none;
+  /* Ẩn ảnh nếu skeleton đang kích hoạt */
+}
+
+.skeleton-active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #ddd 25%, #eee 50%, #ddd 75%);
+  background-size: 200% 100%;
+  /* background-image: url('../component/loading.gif');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center; */
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+footer {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+#moveToTop {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  opacity: 0;
+  visibility: hidden;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 10px 15px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: opacity 1s, visibility 1s;
+  font-size: 16px;
+  z-index: 10;
+}
+
+#moveToTop.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+#moveToTop:hover {
+  background-color: #003366;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 1200px) {}

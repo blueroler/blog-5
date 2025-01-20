@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="foot-content"></div>
+    <script src="/js/link.js"></script>
+    <script>
+
+        async function load_topic() {
+            const response = await fetch(`${databaseUrl}/news.json`); // Gửi yêu cầu lấy dữ liệu từ database
+            const news = await response.json(); // Chuyển đổi phản hồi JSON thành object
+
+            const newsArray = Array.isArray(news)
+                ? news // Nếu là mảng thì dùng trực tiếp
+                : Object.entries(news || {}).map(([id, item]) => ({
+                    id,
+                    ...item,
+                })); // Nếu là object thì chuyển sang mảng
+
+            // Duyệt qua từng bài viết trong newsArray và lấy các topic duy nhất
+            let putArray = [];
+            for (let item of newsArray) {
+                let topic = item.topic;
+
+                // Kiểm tra xem topic đã có trong putArray chưa
+                if (!putArray.includes(topic)) {
+                    // Nếu chưa có, thêm vào putArray
+                    putArray.push(topic);
+                }
+            }
+
+            console.log(putArray); // In ra các topic duy nhất
+            put_topic(putArray);
+        }
+
+        function put_topic(putArray) {
+            const show = document.getElementById('foot-content');
+
+            // Duyệt qua từng phần tử trong putArray để tạo các div
+            for (let post of putArray) {
+                show.innerHTML += `
+                <div id="${post}-section">${post}</div>`; // Tạo các div với id là topic (post)
+            }
+        }
+
+        // Gọi load_data() và sau khi hoàn thành, gọi show()
+        // async function init() {
+        //     await load_topic(); // Đợi load_data() hoàn thành
+        //     show(); // Gọi show() sau khi load_data hoàn tất
+        // }
+
+        load_topic(); // Khởi tạo
+    </script>
+</body>
+
+</html>

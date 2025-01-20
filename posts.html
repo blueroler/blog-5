@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi tiết bài viết</title>
+  <link rel="stylesheet" href="./css/posts.css">
+</head>
+
+<body>
+  <header class="header">
+    <nav>
+      <button class="icon-menu">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </button>
+      <a href="/">Home</a>
+      <a href="posts.html?topic=hots&id=null">Nóng nhất</a>
+      <a href="posts.html?topic=politics&id=null">Chính trị</a>
+      <a href="posts.html?topic=shows&id=null">Giải trí</a>
+      <a href="posts.html?topic=sport&id=null">Thể thao</a>
+      <a href="posts.html?topic=tech&id=null">Công nghệ</a>
+    </nav>
+  </header>
+
+  <sub>
+    <div class="head-content">
+      <div id="ads-section"></div>
+    </div>
+  </sub>
+
+  <main>
+    <div class="main-content">
+      <div id="posts-content" class="posts-content-section"></div>
+      <div id="list-section" class="list-main-section"></div>
+    </div>
+  </main>
+
+  <sub>
+    <div class="foot-content" id="foot-content">
+    </div>
+  </sub>
+
+  <button id="moveToTop" onclick="moveToTop()">⬆</button>
+
+  <footer>
+    <p>&copy; 2024 Daily News</p>
+  </footer>
+
+  <script src="js/link.js"></script>
+  <script src="js/posts.js"></script>
+  <script src="js/ads.js"></script>
+  <script src="/js/framework.js"></script>
+</body>
+
+</html>

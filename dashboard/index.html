@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/dashboard/index.css">
+</head>
+
+<body>
+    <div class="topbar">
+        <span onclick="show_sidebar()" class="menu-icon">&#9776;</span>
+        <h2>Admin Dashboard</h2>
+        <div class="profile">
+            <img src="/component/avatar.png" alt="Profile">
+            <span>Admin</span>
+        </div>
+    </div>
+    <div class="content">
+        <div id="sidebar" class="sidebar">
+            <a onclick="admin_dashboard()"><i>&#x1F4C8;</i> Dashboard</a>
+            <a onclick="manager_blogs()"><i>&#x1F4D6;</i> Blogs</a>
+            <a onclick="add_blogs()"><i>&#x2795;</i> Add Blog</a>
+            <a onclick="admin_ads()"><i>&#x231B;</i> ADS</a>
+            <a onclick="lol()"><i>&#x2699;</i> Settings</a>
+        </div>
+        <div class="main">
+            <div id="admin-dashboard"></div>
+            <div id="admin-blogs"></div>
+            <div id="admin-add-blogs"></div>
+            <div id="admin-ads"></div>
+        </div>
+    </div>
+
+    <script src="/dashboard/link.js"></script>
+    <script src="/dashboard/dash.js"></script>
+    <script src="/js/framework.js"></script>
+</body>
+
+</html>

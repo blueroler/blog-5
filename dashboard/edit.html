@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh sửa bài viết</title>
+    <link rel="stylesheet" href="/dashboard/edit.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1 style="color: red;">Mô tả bài viết</h1>
+        <table id="hbody"></table>
+        <div id="hide-post"></div>
+        <h1 style="color: red;">Chỉnh sửa bài viết </h1>
+        <h2 style="text-align: center; color: blue;">Các phần tử mới</h2>
+        <table id="tbody"></table>
+        <h2 style="text-align: center; color: blue;">Các tùy chọn thêm</h2>
+        <div>
+            <table id="ebody">
+                <tr>
+                    <td style="width: 100px; height: auto;"><label for="title">Tiêu đề:</label></td>
+                    <td><input type="text" id="title" /></td>
+                    <td style="width: 150px; height: auto;"><button
+                            onclick="createNewRef('title', document.getElementById('title').value)">Lưu</button></td>
+                </tr>
+                <tr>
+                    <td><label for="title">Ảnh:</label></td>
+                    <td><input type="text" id="image" /></td>
+                    <td><button onclick="createNewRef('image', document.getElementById('image').value)">Lưu</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="title">Liên kết:</label></td>
+                    <td><input type="text" id="link" /></td>
+                    <td><button onclick="createNewRef('link', document.getElementById('link').value)">Lưu</button></td>
+                </tr>
+                <tr>
+                    <td><label for="content">Nội dung:</label></td>
+                    <td><textarea rows="5" cols="50" id="content"></textarea></td>
+                    <td><button onclick="createNewRef('content', document.getElementById('content').value)">Lưu</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script src="/dashboard/link.js"></script>
+    <script src="/dashboard/edit.js"></script>
+</body>
+
+</html>
