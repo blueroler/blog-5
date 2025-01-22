@@ -25,7 +25,7 @@ async function auto_off_ads() {
         ads: 0,
     };
 
-    const method = 'PUT';
+    const method = 'PATCH';
     const url = `${databaseUrl}/status_element.json`;
     await fetch(url, {
         method,
@@ -38,7 +38,7 @@ async function auto_off_ads() {
 // Lấy dữ liệu từ Firebase và xử lý
 async function fetchAds() {
     try {
-        const response = await fetch(`${databaseUrl}/ads/ads_local.json`);
+        const response = await fetch(`${databaseUrl}/ads/ads_banner.json`);
         const data = await response.json();
 
         if (data) {
@@ -142,10 +142,20 @@ function initializeBanner() {
 }
 
 async function ads_to_head() {
-    const response = await fetch(`${databaseUrl}/ads/ads_global/customer.json`);
-    const customer = await response.json();
-    const ads_script = customer.script;
-    const container = document.createElement('div');
-    container.innerHTML = ads_script;
-    document.head.appendChild(container.firstChild);
+    try {
+        const response = await fetch(`${databaseUrl}/ads/ads_script/customer.json`);
+        if (!response.ok) {
+            return;
+        }
+        const customer = await response.json();
+        if (!customer.script) {
+            return;
+        }
+        const ads_script = customer.script;
+        const container = document.createElement('div');
+        container.innerHTML = ads_script;
+        document.head.appendChild(container.firstChild);
+    } catch (error) {
+        return;
+    }
 }

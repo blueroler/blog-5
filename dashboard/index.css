@@ -132,7 +132,7 @@ body {
 
 .admin-dashboard-container {
     width: 800px;
-    padding: 0 100px;
+    padding: 10px 100px;
     height: fit-content;
     margin: 0 auto;
     border: #ddd 1px solid;

@@ -1,3 +1,37 @@
+dash_addr();
+
+async function dash_addr() {
+    const response = await fetch(`${databaseUrl}/status_element.json`);
+    const post = await response.json();
+
+    if (post.dash_addr == 1) {
+        admin_dashboard();
+    } else if (post.dash_addr == 2) {
+        manager_blogs();
+    } else if (post.dash_addr == 3) {
+        add_blogs();
+    } else if (post.dash_addr == 4) {
+        admin_ads();
+    } else if (post.dash_addr == 5) {
+        lol();
+    }
+}
+
+async function dash_addr_btn(addr) {
+    const postData = {
+        dash_addr: addr,
+    };
+
+    const method = 'PATCH';
+    const url = `${databaseUrl}/status_element.json`;
+    await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(postData),
+    });
+    check_ads_status();
+}
+
 function show_sidebar() {
     const sidebar = document.getElementById("sidebar");
     const content = document.querySelector(".content");
@@ -15,6 +49,9 @@ function show_sidebar() {
 
 function lol() {
     clear_main();
+    const addr = 5;
+    dash_addr_btn(addr)
+
     alert('HeHe Tính năng đang phát triển');
 }
 
@@ -30,15 +67,15 @@ function clear_main() {
     admin_ads.innerHTML = ``;
 }
 
-// admin_dashboard();
-admin_dashboard();
-// manager_blogs();
-
 function admin_dashboard() {
     clear_main();
+    const addr = 1;
+    dash_addr_btn(addr)
+
     const admin_dashboard = document.getElementById('admin-dashboard');
     admin_dashboard.innerHTML = `
     <div class="admin-dashboard-container">
+        <div id="ads-status"></div>
         <h2>Tổng quan bài viết</h2>
         <div class="admin-box">
             <div class="count-box">
@@ -54,26 +91,58 @@ function admin_dashboard() {
                 <div id="count-draft"></div>
             </div>
         </div>
-
-        <h2>Theo các chủ đề</h2>
-        <div class="admin-box">
-            <div class="count-box">
-                <h3>Politics</h3>
-                <div id="count-politics-post"></div>
-            </div>
-            <div class="count-box">
-                <h3>Shows</h3>
-                <div id="count-shows-post"></div>
-            </div>
-            <div class="count-box">
-                <h3>Sport</h3>
-                <div id="count-sport-post"></div>
-            </div>
-        </div>
-    </div>
     `;
+    ads_status();
     count_total();
 }
+
+async function ads_status() {
+    let script_customer = 'Không có';
+
+    try {
+        const response = await fetch(`${databaseUrl}/ads/ads_script/customer.json`);
+        if (response.ok) {
+            const customer = await response.json();
+            if (customer.script) {
+                script_customer = customer.name;
+            }
+        }
+    } catch (error) {
+    }
+
+    let htmlContent = '';
+
+    try {
+        const response1 = await fetch(`${databaseUrl}/status_element.json`);
+        const post1 = await response1.json();
+
+        const adsStatus = post1.ads === 0 ? 'Off' : 'On';
+        const adsStatusColor = post1.ads === 0 ? 'red' : 'blue';
+
+        htmlContent = `
+        <div style="display: flex; justify-content: space-around; align-items: center; gap: 20px; margin-bottom: 30px;">
+            <div style="display: inline-block; width: 150px; text-align: center; color: ${adsStatusColor};">
+                <h3>ADS Banner Status: ${adsStatus}</h3>
+            </div>
+            <div style="display: inline-block; width: 150px; text-align: center; color: blue;">
+                <h3>ADS script: ${script_customer}</h3>
+            </div>
+        </div>`;
+    } catch (error) {
+        console.error("Error fetching status data:", error);
+        return;
+    }
+
+    // Thêm HTML vào trang
+    const adsStatusContainer = document.getElementById('ads-status');
+    if (adsStatusContainer) {
+        adsStatusContainer.innerHTML += htmlContent;
+    } else {
+        console.error("'ads-status' container not found!");
+    }
+}
+
+
 async function count_total() {
     let count1 = 0;
     let count2 = 0;
@@ -115,6 +184,8 @@ async function count_total() {
 
 async function manager_blogs() {
     clear_main();
+    const addr = 2;
+    dash_addr_btn(addr)
 
     const admin_blogs = document.getElementById('admin-blogs');
     admin_blogs.innerHTML += `<div class="table-list">
@@ -268,6 +339,9 @@ async function Delete(id) {
 
 async function add_blogs() {
     clear_main();
+    const addr = 3;
+    dash_addr_btn(addr)
+
     const admin_add_blogs = document.getElementById('admin-add-blogs');
     admin_add_blogs.innerHTML = `
     <div class="admin-add-container">
@@ -361,6 +435,9 @@ function add_Post() {
 
 function admin_ads() {
     clear_main();
+    const addr = 4;
+    dash_addr_btn(addr)
+
     const admin_ads = document.getElementById('admin-ads');
     admin_ads.innerHTML = `
     <div class="admin-ads-container">
@@ -369,10 +446,10 @@ function admin_ads() {
             <p style="text-align: center; font-size: 15px; margin-top: 5px; color: #999;">quảng cáo sẽ tự động tắt nếu không có dữ liệu</p>
             <div id="check-ads-status"></div>
             <table>
-                <tbody id="get-local-ads">
+                <tbody id="get-banner-ads">
                 </tbody>
             </table>
-            <form id='add-local-ads'>
+            <form id='add-banner-ads'>
                 <div>
                     <label for="ads-id">Thêm mới một item </label>
                     <input type="text" id="img-id" placeholder="Img banner" required />
@@ -385,17 +462,17 @@ function admin_ads() {
         </div>
 
         <div class="ads-container">
-            <h2 style="text-align: center; margin: 10px 0;">Quảng cáo bằng mã Script</h2>
+            <h2 style="text-align: center; margin: 10px 0;">Quảng cáo bằng mã script</h2>
             <p style="text-align: center; font-size: 15px; margin-top: 5px; color: #999;">(mã sẽ được chèn trong thẻ head)</p>
             <table>
-                <tbody id="get-global-ads">
+                <tbody id="get-script-ads">
                 </tbody>
             </table>
-            <form id='add-global-ads'>
+            <form id='add-script-ads'>
                 <div>
-                    <label for="ads-id">Chèn ADS Script</label>
+                    <label for="ads-id">Chèn ADS script</label>
                     <input type="text" id="name-ads" placeholder="Name" required />
-                    <input type="text" id="script-ads-id" placeholder="Script" required>
+                    <input type="text" id="script-ads-id" placeholder="script" required>
                 </div>
                 <div class="just-center">
                     <button type="submit">Tạo</button>
@@ -405,7 +482,7 @@ function admin_ads() {
     </div>
     `;
     check_ads_status();
-    put_ads_global();
+    put_ads_script();
 }
 
 async function check_ads_status() {
@@ -431,7 +508,7 @@ async function check_ads_status() {
 
     dataContainer.innerHTML = htmlContent;
     const myButton = document.getElementById('button-check-data');
-    put_ads_local(myButton);
+    put_ads_banner(myButton);
 
 }
 
@@ -440,7 +517,7 @@ async function on_ads() {
         ads: 1,
     };
 
-    const method = 'PUT';
+    const method = 'PATCH';
     const url = `${databaseUrl}/status_element.json`;
     if (confirm('Bạn có chắc chắn muốn BẬT quảng cáo?')) {
         await fetch(url, {
@@ -457,7 +534,7 @@ async function off_ads() {
         ads: 0,
     };
 
-    const method = 'PUT';
+    const method = 'PATCH';
     const url = `${databaseUrl}/status_element.json`;
     if (confirm('Bạn có chắc chắn muốn TẮT quảng cáo?')) {
         await fetch(url, {
@@ -474,7 +551,7 @@ async function auto_off_ads() {
         ads: 0,
     };
 
-    const method = 'PUT';
+    const method = 'PATCH';
     const url = `${databaseUrl}/status_element.json`;
     await fetch(url, {
         method,
@@ -485,13 +562,13 @@ async function auto_off_ads() {
 }
 
 
-async function put_ads_local(myButton) {
+async function put_ads_banner(myButton) {
     try {
         // Gắn sự kiện submit cho form
-        document.getElementById('add-local-ads').addEventListener('submit', saveAdsLocal);
+        document.getElementById('add-banner-ads').addEventListener('submit', saveAdsBanner);
 
         // Lấy dữ liệu từ Firebase
-        const response = await fetch(`${databaseUrl}/ads/ads_local.json`);
+        const response = await fetch(`${databaseUrl}/ads/ads_banner.json`);
 
         // Kiểm tra nếu phản hồi không thành công
         if (!response.ok) {
@@ -550,13 +627,13 @@ async function put_ads_local(myButton) {
         }
 
         // Hiển thị nội dung lên bảng
-        document.querySelector('#get-local-ads').innerHTML = htmlData;
+        document.querySelector('#get-banner-ads').innerHTML = htmlData;
 
     } catch (error) {
         console.error('Lỗi khi tải dữ liệu:', error);
 
         // Hiển thị thông báo lỗi lên giao diện
-        document.querySelector('#get-local-ads').innerHTML = `
+        document.querySelector('#get-banner-ads').innerHTML = `
             <tr>
                 <td colspan="4" style="text-align: center; color: red;">Lỗi khi tải dữ liệu. Vui lòng thử lại sau.</td>
             </tr>
@@ -565,44 +642,44 @@ async function put_ads_local(myButton) {
 }
 
 
-async function put_ads_global() {
-    document.getElementById('add-global-ads').addEventListener('submit', saveAdsGlobal);
+async function put_ads_script() {
+    document.getElementById('add-script-ads').addEventListener('submit', saveAdsscript);
     try {
         // Lấy dữ liệu từ Firebase
-        const response = await fetch(`${databaseUrl}/ads/ads_global/customer.json`);
+        const response = await fetch(`${databaseUrl}/ads/ads_script/customer.json`);
         const customer = await response.json();
 
         // Kiểm tra nếu không có dữ liệu
         if (!customer) {
-            document.querySelector('#get-global-ads').innerHTML = '<tr><td colspan="3">Không có dữ liệu.</td></tr>';
+            document.querySelector('#get-script-ads').innerHTML = '<tr><td colspan="3">Không có dữ liệu.</td></tr>';
             return;
         }
 
         const htmlData = `
             <tr>
                 <td><h4>Name</h4></td>
-                <td><h4>Script</h4></td>
+                <td><h4>script</h4></td>
                 <td style="width: 150px;"><h4>Hành động</h4></td>
             </tr>
             <tr>
                 <td>${customer.name}</td>
                 <td>${textOutput(customer.script)}</td>
                 <td>
-                    <button onclick="removeGlobalAd()">Delete</button>
+                    <button onclick="removescriptAd()">Delete</button>
                 </td>
             </tr>
         `;
 
-        document.querySelector('#get-global-ads').innerHTML = htmlData;
+        document.querySelector('#get-script-ads').innerHTML = htmlData;
     } catch (error) {
         console.error('Lỗi khi tải dữ liệu:', error);
-        document.querySelector('#get-global-ads').innerHTML = '<tr><td colspan="3">Lỗi tải dữ liệu.</td></tr>';
+        document.querySelector('#get-script-ads').innerHTML = '<tr><td colspan="3">Lỗi tải dữ liệu.</td></tr>';
     }
 }
 
 
 async function moveUp(id, index) {
-    const response = await fetch(`${databaseUrl}/ads/ads_local.json`);
+    const response = await fetch(`${databaseUrl}/ads/ads_banner.json`);
     const news = await response.json();
     const newsArray = Object.entries(news || {}).map(([id, item]) => ({ id, ...item }));
     newsArray.sort((a, b) => b.timestamp - a.timestamp);
@@ -613,8 +690,8 @@ async function moveUp(id, index) {
 
         // Hoán đổi timestamp
         const updates = {
-            [`/ads/ads_local/${currentItem.id}/timestamp`]: prevItem.timestamp,
-            [`/ads/ads_local/${prevItem.id}/timestamp`]: currentItem.timestamp,
+            [`/ads/ads_banner/${currentItem.id}/timestamp`]: prevItem.timestamp,
+            [`/ads/ads_banner/${prevItem.id}/timestamp`]: currentItem.timestamp,
         };
 
         await fetch(`${databaseUrl}/.json`, {
@@ -628,7 +705,7 @@ async function moveUp(id, index) {
 }
 
 async function moveDown(id, index) {
-    const response = await fetch(`${databaseUrl}/ads/ads_local.json`);
+    const response = await fetch(`${databaseUrl}/ads/ads_banner.json`);
     const news = await response.json();
     const newsArray = Object.entries(news || {}).map(([id, item]) => ({ id, ...item }));
     newsArray.sort((a, b) => b.timestamp - a.timestamp);
@@ -639,8 +716,8 @@ async function moveDown(id, index) {
 
         // Hoán đổi timestamp
         const updates = {
-            [`/ads/ads_local/${currentItem.id}/timestamp`]: nextItem.timestamp,
-            [`/ads/ads_local/${nextItem.id}/timestamp`]: currentItem.timestamp,
+            [`/ads/ads_banner/${currentItem.id}/timestamp`]: nextItem.timestamp,
+            [`/ads/ads_banner/${nextItem.id}/timestamp`]: currentItem.timestamp,
         };
 
         await fetch(`${databaseUrl}/.json`, {
@@ -653,28 +730,28 @@ async function moveDown(id, index) {
     }
 }
 
-async function saveAdsLocal(event) {
+async function saveAdsBanner(event) {
     event.preventDefault();
 
     try {
-        const response = await fetch(`${databaseUrl}/ads/ads_local.json`);
+        const response = await fetch(`${databaseUrl}/ads/ads_banner.json`);
         const news = await response.json();
         const newsArray = Object.entries(news || {}).map(([id, item]) => ({ id, ...item }));
         newsArray.sort((a, b) => b.timestamp - a.timestamp);
 
         if (newsArray.length === 0) {
             auto_off_ads();
-            saveAdsLocal_check();
+            saveAdsBanner_check();
         } else {
             error
         }
 
     } catch (error) {
-        saveAdsLocal_check();
+        saveAdsBanner_check();
     }
 }
 
-async function saveAdsLocal_check() {
+async function saveAdsBanner_check() {
     const data1 = document.getElementById('img-id').value.trim();
     const data2 = document.getElementById('ads-id').value.trim();
     const newAd = {
@@ -684,7 +761,7 @@ async function saveAdsLocal_check() {
     };
 
     try {
-        const response = await fetch(`${databaseUrl}/ads/ads_local.json`, {
+        const response = await fetch(`${databaseUrl}/ads/ads_banner.json`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newAd),
@@ -692,7 +769,7 @@ async function saveAdsLocal_check() {
 
         if (response.ok) {
             alert('Thêm thành công!');
-            document.getElementById('add-local-ads').reset();
+            document.getElementById('add-banner-ads').reset();
             check_ads_status();
         } else {
             alert('Thêm thất bại.');
@@ -702,7 +779,7 @@ async function saveAdsLocal_check() {
     }
 }
 
-async function saveAdsGlobal(event) {
+async function saveAdsscript(event) {
     event.preventDefault(); // Ngăn chặn reload form
 
     // Lấy dữ liệu từ form
@@ -716,8 +793,8 @@ async function saveAdsGlobal(event) {
     };
 
     try {
-        // Gửi yêu cầu PUT để ghi đè tại key "global_ad"
-        const response = await fetch(`${databaseUrl}/ads/ads_global/customer.json`, {
+        // Gửi yêu cầu PUT để ghi đè tại key "script_ad"
+        const response = await fetch(`${databaseUrl}/ads/ads_script/customer.json`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newAd),
@@ -725,8 +802,8 @@ async function saveAdsGlobal(event) {
 
         if (response.ok) {
             alert('Cập nhật thành công!');
-            document.getElementById('add-global-ads').reset(); // Xóa form sau khi lưu
-            put_ads_global(); // Cập nhật lại dữ liệu
+            document.getElementById('add-script-ads').reset(); // Xóa form sau khi lưu
+            put_ads_script(); // Cập nhật lại dữ liệu
         } else {
             alert('Cập nhật thất bại.');
         }
@@ -736,16 +813,16 @@ async function saveAdsGlobal(event) {
     }
 }
 
-async function removeGlobalAd() {
+async function removescriptAd() {
     if (confirm('Bạn có chắc chắn muốn xóa quảng cáo này không?')) {
         try {
-            const response = await fetch(`${databaseUrl}/ads/ads_global/customer.json`, {
+            const response = await fetch(`${databaseUrl}/ads/ads_script/customer.json`, {
                 method: 'DELETE',
             });
 
             if (response.ok) {
                 alert('Xóa thành công!');
-                put_ads_global(); // Cập nhật lại hiển thị
+                put_ads_script(); // Cập nhật lại hiển thị
             } else {
                 alert('Xóa thất bại.');
             }
@@ -759,7 +836,7 @@ async function removeGlobalAd() {
 
 async function removeAds(key) {
     try {
-        const response = await fetch(`${databaseUrl}/ads/ads_local/${key}.json`, { method: 'DELETE' });
+        const response = await fetch(`${databaseUrl}/ads/ads_banner/${key}.json`, { method: 'DELETE' });
         if (response.ok) {
             alert('Xóa thành công!');
             check_ads_status();
@@ -790,7 +867,7 @@ async function updateNow(key, elem) {
     };
 
     try {
-        const response = await fetch(`${databaseUrl}/ads/ads_local/${key}.json`, {
+        const response = await fetch(`${databaseUrl}/ads/ads_banner/${key}.json`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(obj),

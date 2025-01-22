@@ -21,10 +21,14 @@ if (postId == 'null') {
 
 function show_foot_content() {
   const show_foot_content = document.getElementById('foot-content');
-  show_foot_content.innerHTML = `
+  if (!get_topic) {
+    return;
+  } else {
+    show_foot_content.innerHTML = `
     <div class="sub-section" id="${get_topic}-section"></div>
     `;
-  show_next_content();
+    show_next_content();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,19 +46,34 @@ async function posts_id() {
   try {
     const response = await fetch(`${databaseUrl}/news/${postId}.json`);
     const post = await response.json();
-    let htmlContent = '';
-    if (post.status === "public") {
-      htmlContent =
-        `<div class="posts-title">
-                    <h4>${post.topic}</h4>
-                    <small>Ngày đăng: ${new Date(post.timestamp).toLocaleString()}</small>
-                </div>
-                <h1>${textOutput(post.name)}</h1>
-            `;
-      dataContainer.innerHTML = htmlContent;
-      fetchAndDisplayData();
-    } else { shows_error(); }
-  } catch (error) { shows_error(); }
+
+    if (!post || post.status !== "public") {
+      shows_error();
+      return;
+    }
+
+    // Cập nhật tiêu đề
+    let titleElement = document.head.querySelector('title');
+    if (!titleElement) {
+      titleElement = document.createElement('title');
+      document.head.appendChild(titleElement);
+    }
+    titleElement.textContent = textOutput(post.name);
+
+    // Hiển thị nội dung bài viết
+    const htmlContent = `
+      <div class="posts-title">
+        <h4>${post.topic}</h4>
+        <small>Ngày đăng: ${new Date(post.timestamp).toLocaleString()}</small>
+      </div>
+      <h1>${textOutput(post.name)}</h1>
+    `;
+    dataContainer.innerHTML = htmlContent;
+
+    fetchAndDisplayData();
+  } catch (error) {
+    shows_error();
+  }
 }
 
 async function fetchAndDisplayData() {
@@ -175,7 +194,10 @@ function show_next_content() {
   const show_hots = document.getElementById(get_topic + '-section');
   show_hots.innerHTML = `
     <div class="section-title">
-      <h2>Tiếp theo</h2>
+      <div class="cover-title">
+        <h2>Tiếp theo</h2>
+        <div class="cover-left-title"></div>
+      </div>
       <div class="carousel-buttons">
         <button class="carousel-button left" onclick="moveCarousel_next_content(-1)">&#10094;</button>
         <button class="carousel-button right" onclick="moveCarousel_next_content(1)">&#10095;</button>

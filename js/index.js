@@ -156,7 +156,10 @@ function initializeSections(putArray) {
     const sectionElement = document.getElementById(`${section}-section`);
     sectionElement.innerHTML = `
       <div class="section-title">
-        <h2>Tin ${capitalizeFirstLetter(section)}</h2>
+        <a class="cover-title" href="posts.html?topic=${section}&id=null">
+          <h2>${capitalizeFirstLetter(section)}</h2>
+          <div class="cover-left-title"></div>
+        </a>
         <div class="carousel-buttons">
           <button class="carousel-button left" onclick="moveCarousel('${section}', -1)">&#10094;</button>
           <button class="carousel-button right" onclick="moveCarousel('${section}', 1)">&#10095;</button>
@@ -227,11 +230,6 @@ async function loadData(section) {
   }
 
   carousel.innerHTML = contentHTML; // Gán nội dung HTML vào băng chuyền
-}
-
-// Hàm viết hoa chữ cái đầu tiên của từ
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -96,7 +96,7 @@ async function fetchPostData() {
         if (post.name) {
             htmlContent += `<tr>
                                 <td style="width: 100px; height: 40px;">Tên bài viết</td>
-                                <td>${post.name}</td>
+                                <td>${textOutput(post.name)}</td>
                             </tr>`;
         }
         if (post.summary) {
@@ -149,9 +149,9 @@ async function fetchAndDisplayData() {
                 htmlContent += `
                                 <tr>
                                     <td style="width: 100px; height: 40px;">Tiêu đề</td>
-                                    <td>${value}</td>
+                                    <td>${textOutput(value)}</td>
                                     <td style="width: 150px; height: auto;">
-                                        <button onclick="readyForUpdate('${key}', this)">Sửa</button>
+                                        <button onclick="Update('${key}', this)">Sửa</button>
                                         <button onclick="removeID('${key}')">Xóa</button>
                                     </td>
                                 </tr>`;
@@ -159,9 +159,9 @@ async function fetchAndDisplayData() {
                 htmlContent += `
                                 <tr>
                                     <td style="width: 100px; height: 40px;">Nội dung</td>
-                                    <td>${value}</td>
+                                    <td>${textOutput(value)}</td>
                                     <td style="width: 150px; height: auto;">
-                                        <button onclick="readyForUpdate('${key}', this)">Sửa</button>
+                                        <button onclick="Update('${key}', this)">Sửa</button>
                                         <button onclick="removeID('${key}')">Xóa</button>
                                     </td>
                                 </tr>`;
@@ -171,7 +171,7 @@ async function fetchAndDisplayData() {
                                     <td style="width: 100px; height: 40px;">Ảnh</td>
                                     <td><img src="${value}" width="300" height="auto" /></td>
                                     <td style="width: 150px; height: auto;">
-                                        <button onclick="readyForUpdate('${key}', this)">Sửa</button>
+                                        <button onclick="Update('${key}', this)">Sửa</button>
                                         <button onclick="removeID('${key}')">Xóa</button>
                                     </td>
                                 </tr>`;
@@ -181,7 +181,7 @@ async function fetchAndDisplayData() {
                                     <td style="width: 100px; height: 40px;">Liên kết</td>
                                     <td><a href="${value}" target="_blank" title="Đường liên kết">${value}</a></td>
                                     <td style="width: 150px; height: auto;">
-                                        <button onclick="readyForUpdate('${key}', this)">Sửa</button>
+                                        <button onclick="Update('${key}', this)">Sửa</button>
                                         <button onclick="removeID('${key}')">Xóa</button>
                                     </td>
                                 </tr>`;
@@ -220,8 +220,8 @@ async function removeID(key) {
 }
 
 
-// readyForUpdate function
-function readyForUpdate(key, elem) {
+// Update function
+function Update(key, elem) {
     // Lấy tất cả các ô trong hàng
     const siblingTd = elem.parentElement.parentElement.getElementsByTagName('td');
 
@@ -260,7 +260,7 @@ async function updateNow(key, elem) {
             editableCell.classList.remove('temp-update-class');
 
             // Đổi nút Sửa thành Lưu
-            elem.setAttribute('onclick', `readyForUpdate('${key}', this)`);
+            elem.setAttribute('onclick', `Update('${key}', this)`);
             elem.innerHTML = 'Lưu';
 
         } else {
